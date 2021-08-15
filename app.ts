@@ -8,10 +8,17 @@ import routes from './routes';
 import { CustomError } from './types/app';
 
 const app: express.Application = express();
+const debugLog: debug.IDebugger = debug('Express');
 
 app.use(express.json());
 app.use(cors());
 app.use(expressWinston.logger(loggerOptions));
+
+app.use((req: express.Request, _res: express.Response, next: express.NextFunction) => {
+  debugLog(`${req.method} ${req.url}`);
+  next();
+});
+
 app.use(routes);
 
 app.use((_req: express.Request, _res: express.Response, next: express.NextFunction) => {
