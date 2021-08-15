@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "per-env",
+    "start:development": "nodemon -r dotenv/config ./bin/www",
+    "start:production": "ts-node ./bin/www"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +32,10 @@
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",
     "express-winston": "^4.1.0",
+    "per-env": "^1.0.2",
     "winston": "^3.3.3"
+  },
+  "nodemonConfig": {
+    "ext": "ts,json"
   }
 }
