@@ -1,5 +1,3 @@
-import type { Request, Response } from 'express';
-
 import { Router } from 'express';
 import apiRouter from "./api";
 

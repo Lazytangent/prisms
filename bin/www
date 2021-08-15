@@ -1,10 +1,8 @@
 #!/usr/bin/env node
 
-const { PrismaClient } = require('@prisma/client');
-
 const { port } = require('../config');
 const app = require('../app');
-const prisma = new PrismaClient();
+const db = require('../db');
 
 async function main() {
   app.listen(port, () => console.log(`Listening on port ${port}...`))
@@ -12,5 +10,5 @@ async function main() {
 
 main()
   .finally(async () => {
-    await prisma.$disconnect();
+    await db.$disconnect();
   })
