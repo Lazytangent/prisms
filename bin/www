@@ -4,5 +4,13 @@ const { PrismaClient } = require('@prisma/client');
 
 const { port } = require('../config');
 const app = require('../app');
+const prisma = new PrismaClient();
 
-app.listen(port, () => console.log(`Listening on port ${port}...`));
+async function main() {
+  app.listen(port, () => console.log(`Listening on port ${port}...`))
+}
+
+main()
+  .finally(async () => {
+    await prisma.$disconnect();
+  })
