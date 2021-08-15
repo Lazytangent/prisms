@@ -36,6 +36,7 @@
     "winston": "^3.3.3"
   },
   "nodemonConfig": {
-    "ext": "ts,json"
+    "ext": "ts,json",
+    "exec": "ts-node"
   }
 }
