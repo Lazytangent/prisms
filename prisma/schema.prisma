@@ -9,3 +9,20 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
 }
+
+model User {
+  id Int @default(autoincrement()) @id
+  email String @unique
+  username String @unique
+  hashedPassword Bytes
+  tweets Tweet[]
+}
+
+model Tweet {
+  id Int @default(autoincrement()) @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  content String
+  author User @relation(fields: [authorId], references: [id])
+  authorId Int
+}
