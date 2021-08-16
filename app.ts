@@ -17,7 +17,7 @@ const isProduction = environment === 'production';
 
 app.use(express.json());
 app.use(cors());
-app.use(session({ secret, cookie: { maxAge }}));
+app.use(session({ secret, cookie: { maxAge }, resave: false, saveUninitialized: false }));
 app.use(expressWinston.logger(loggerOptions));
 app.use(debugLogger('express'));
 app.use(routes);
