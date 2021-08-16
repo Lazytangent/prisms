@@ -8,6 +8,6 @@ const router: Router = Router();
 
 router.get('', asyncHandler(async (req: Request, res: Response) => {
 
-}))
+}));
 
 export default router;
