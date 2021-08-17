@@ -15,10 +15,19 @@ describe('db', () => {
     });
   });
 
-  describe("the User object's", () => {
-    describe('validatePassword method should', () => {
-      test('exist', () => {
-        expect(User.validatePassword).toBeInstanceOf(Function);
+  describe("the User class should have", () => {
+    describe('a hashPassword static method that', () => {
+      test('exists', () => {
+        expect(User.hashPassword).toBeInstanceOf(Function);
+      });
+    });
+
+    describe('a validatePassword instance method that', () => {
+      test('exists', async () => {
+        // expect(User.validatePassword).toBeInstanceOf(Function);
+      });
+
+      test('returns a boolean value of true if the password is correct', () => {
       });
     });
   });
