@@ -23,6 +23,18 @@ describe("the User class should have", () => {
     });
   });
 
+  describe('a signup static method that', () => {
+    test('exists', () => {
+      expect(User.signup).toBeInstanceOf(Function);
+    });
+  });
+
+  describe('a login static method that', () => {
+    test('exists', () => {
+      expect(User.login).toBeInstanceOf(Function);
+    });
+  });
+
   describe('a validatePassword instance method that', () => {
     test('exists', async () => {
       // expect(User.validatePassword).toBeInstanceOf(Function);
