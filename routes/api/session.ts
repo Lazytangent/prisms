@@ -7,7 +7,7 @@ import { user } from '../../db';
 const router: Router = Router();
 
 router.get('', asyncHandler(async (req: Request, res: Response) => {
-
-}))
+  res.json(req.session);
+}));
 
 export default router;

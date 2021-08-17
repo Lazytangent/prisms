@@ -3,9 +3,10 @@ import type { Request, Response, NextFunction } from 'express';
 import express from 'express';
 import expressWinston from 'express-winston';
 import cors from 'cors';
+import session from 'express-session';
 import { Prisma } from '@prisma/client';
 
-import { environment } from './config';
+import { environment, secret, maxAge } from './config';
 import { loggerOptions } from './config/logger-options';
 import routes from './routes';
 import { CustomError } from './types/app';
@@ -16,6 +17,7 @@ const isProduction = environment === 'production';
 
 app.use(express.json());
 app.use(cors());
+app.use(session({ secret, cookie: { maxAge }, resave: false, saveUninitialized: false }));
 app.use(expressWinston.logger(loggerOptions));
 app.use(debugLogger('express'));
 app.use(routes);
