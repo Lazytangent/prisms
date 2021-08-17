@@ -37,7 +37,8 @@ describe("the User class should have", () => {
 
   describe('a validatePassword instance method that', () => {
     test('exists', async () => {
-      // expect(User.validatePassword).toBeInstanceOf(Function);
+      const user = new User({ id: 0, email: 'email', username: 'username', hashedPassword: 'password' });
+      expect(user.validatePassword).toBeInstanceOf(Function);
     });
 
     test('returns a boolean value of true if the password is correct', () => {
