@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest -i",
     "start": "per-env",
     "start:development": "nodemon -r dotenv/config ./bin/www",
     "start:production": "ts-node ./bin/www"
@@ -21,6 +21,7 @@
     "@types/node": "^16.6.1",
     "@types/supertest": "^2.0.11",
     "jest": "^27.0.6",
+    "jest-mock-extended": "^2.0.2-beta2",
     "nodemon": "^2.0.12",
     "prisma": "^2.29.1",
     "source-map-support": "^0.5.19",
