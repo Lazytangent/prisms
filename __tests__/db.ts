@@ -14,4 +14,12 @@ describe('db', () => {
       expect(Tweet).toBeTruthy();
     });
   });
+
+  describe("the User object's", () => {
+    describe('validatePassword method should', () => {
+      test('exist', () => {
+        expect(User.validatePassword).toBeInstanceOf(Function);
+      });
+    });
+  });
 });

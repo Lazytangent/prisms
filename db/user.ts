@@ -36,6 +36,7 @@ const User = {
     });
     console.log(query);
   },
+  validatePassword: () => true,
 };
 
 export default User;
