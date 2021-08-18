@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import db, { User, Tweet } from '../db';
 
 describe('db', () => {
@@ -21,6 +22,15 @@ describe("the User class should have", () => {
     test('exists', () => {
       expect(User.hashPassword).toBeInstanceOf(Function);
     });
+
+    test('returns a hashed password', async () => {
+      const password = 'password';
+      const hashedPassword = await User.hashPassword(password);
+      const result = await bcrypt.compare(password, hashedPassword);
+
+      expect(password === hashedPassword).toEqual(false);
+      expect(result).toEqual(true);
+    });
   });
 
   describe('a signup static method that', () => {
@@ -36,12 +46,26 @@ describe("the User class should have", () => {
   });
 
   describe('a validatePassword instance method that', () => {
+    let user: User;
+
+    beforeAll(async () => {
+      const password = 'password';
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user = new User({ id: 0, email: 'email', username: 'username', hashedPassword });
+    });
+
     test('exists', async () => {
-      const user = new User({ id: 0, email: 'email', username: 'username', hashedPassword: 'password' });
       expect(user.validatePassword).toBeInstanceOf(Function);
     });
 
-    test('returns a boolean value of true if the password is correct', () => {
+    test('returns a boolean value of true if the password is correct', async () => {
+      const password1 = 'password';
+      const password2 = 'password2';
+      const result1 = await user.validatePassword(password1);
+      const result2 = await user.validatePassword(password2);
+
+      expect(result1).toEqual(true);
+      expect(result2).toEqual(false);
     });
   });
 });

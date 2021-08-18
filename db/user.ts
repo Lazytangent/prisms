@@ -1,12 +1,12 @@
-import { randomBytes, pbkdf2 } from 'crypto';
+import bcrypt from 'bcryptjs';
 import { user } from "../db";
 
-interface loginUser {
-  username: string;
+interface LoginUser {
+  credential: string;
   password: string;
 }
 
-interface signupUser {
+interface SignupUser {
   username: string;
   email: string;
   password: string;
@@ -59,10 +59,16 @@ class User {
     this.hashedPassword = user.hashedPassword;
   }
 
-  static login = () => {}
-  static signup = () => {}
-  static hashPassword = () => {}
-  validatePassword = (password: string) => {}
+  static login = ({ credential, password }: LoginUser) => {}
+  static signup = ({ email, username, password }: SignupUser) => {}
+
+  static hashPassword = (password: string) => {
+    return bcrypt.hash(password, 10);
+  }
+
+  validatePassword = (password: string) => {
+    return bcrypt.compare(password, this.hashedPassword);
+  }
 }
 
 export default User;
