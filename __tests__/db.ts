@@ -1,17 +1,18 @@
 import bcrypt from 'bcryptjs';
 import db, { User, Tweet } from '../db';
+import { prismaMock } from '../db/singleton';
 
 describe('db', () => {
   describe('should export', () => {
-    test('the Prisma db object', () => {
+    it('the Prisma db object', () => {
       expect(db).toBeTruthy();
     });
 
-    test('the User object', () => {
+    it('the User object', () => {
       expect(User).toBeTruthy();
     });
 
-    test('the Tweet object', () => {
+    it('the Tweet object', () => {
       expect(Tweet).toBeTruthy();
     });
   });
@@ -19,11 +20,11 @@ describe('db', () => {
 
 describe("The User class should have", () => {
   describe('a hashPassword static method that', () => {
-    test('exists', () => {
+    it('exists', () => {
       expect(User.hashPassword).toBeInstanceOf(Function);
     });
 
-    test('returns a hashed password', async () => {
+    it('returns a hashed password', async () => {
       const password = 'password';
       const hashedPassword = await User.hashPassword(password);
       const result = await bcrypt.compare(password, hashedPassword);
@@ -33,28 +34,105 @@ describe("The User class should have", () => {
     });
   });
 
+  describe('an emailLookup static method that', () => {
+    let email: string;
+
+    beforeEach(async () => {
+      const password = 'password';
+      const hashedPassword = await bcrypt.hash(password, 10);
+      email = 'test@email.com';
+
+      const userInfo = { email, username: 'testuser', hashedPassword };
+      await db.user.create({ data: userInfo });
+    });
+
+    afterEach(async () => {
+      await db.user.delete({ where: { email } });
+      await db.$disconnect();
+    });
+
+    it('returns a User object if a user matches the email provided', async () => {
+      const user = await User.emailLookup(email);
+
+      expect(user).toBeTruthy();
+      expect(user?.email).toEqual(email);
+    });
+
+    it('returns undefined if no user matches the email provided', async () => {
+      const user = await User.emailLookup('bad@email.io');
+
+      expect(user).toBeNull();
+    });
+  });
+
+  describe('a usernameLookup static method that', () => {
+    let username: string;
+
+    beforeEach(async () => {
+      const password = 'password';
+      const hashedPassword = await bcrypt.hash(password, 10);
+      username = 'testuser';
+
+      const userInfo = { email: 'test@email.com', username, hashedPassword };
+      await prismaMock.user.create({ data: userInfo });
+    });
+
+    afterEach(async () => {
+      await prismaMock.user.delete({ where: { username } });
+      await prismaMock.$disconnect();
+    });
+
+    it('returns a User object if a user matches the username provided', async () => {
+      const user = await User.usernameLookup(username);
+
+      expect(user).toBeTruthy();
+      expect(user?.username).toEqual(username);
+    });
+
+    it.todo('returns undefined if no user matches the username provided');
+  });
+
+  describe('an emailExists static method that', () => {
+    it.todo('returns a boolean value of true if a user with the provided email exists');
+    it.todo('returns a boolean value of false if no user with the provided email exists');
+  });
+
+  describe('a usernameExists static method that', () => {
+    it.todo('returns a boolean value of true if a user with the provided username exists');
+    it.todo('returns a boolean value of false if no user with the provided username exists');
+  });
+
   describe('a signup static method that', () => {
-    test('exists', () => {
+    it('exists', () => {
       expect(User.signup).toBeInstanceOf(Function);
     });
 
-    test.todo('creates a new User if the information provided validates');
-    test.todo('returns errors about the fields that failed validation');
-    test.todo('does not create a new User if information is missing');
-    test.todo('does not create a new User if the email has been used');
-    test.todo('does not create a new User if the username has been used');
-    test.todo("does not create a new User if the passwords don't match");
+    it('creates a new User if the information provided validates', async () => {
+      const userInfoSignup = { email: 'test@test.io', username: 'valid_username', password: 'password', confirmPassword: 'password' };
+      const user = await User.signup(userInfoSignup);
+
+      // expect(user).toContain(userInfoSignup);
+    });
+
+    it('returns errors about the fields that failed validation', async () => {
+      const badUserInfo = { email: 'test', username: '', password: 'asdf' };
+    });
+
+    it.todo('does not create a new User if information is missing');
+    it.todo('does not create a new User if the email has been used');
+    it.todo('does not create a new User if the username has been used');
+    it.todo("does not create a new User if the passwords don't match");
   });
 
   describe('a login static method that', () => {
-    test('exists', () => {
+    it('exists', () => {
       expect(User.login).toBeInstanceOf(Function);
     });
 
-    test.todo('logs a user in if the information provided validates');
-    test.todo('returns an error if either the credential or password fails validation');
-    test.todo('does not log a user in if the password does not validate');
-    test.todo('does not log a user in if the credential does not match an email nor a username');
+    it.todo('logs a user in if the information provided validates');
+    it.todo('returns an error if either the credential or password fails validation');
+    it.todo('does not log a user in if the password does not validate');
+    it.todo('does not log a user in if the credential does not match an email nor a username');
   });
 
   describe('a validatePassword instance method that', () => {
@@ -66,11 +144,11 @@ describe("The User class should have", () => {
       user = new User({ id: 0, email: 'email', username: 'username', hashedPassword });
     });
 
-    test('exists', async () => {
+    it('exists', async () => {
       expect(user.validatePassword).toBeInstanceOf(Function);
     });
 
-    test('returns a boolean value of true if the password is correct', async () => {
+    it('returns a boolean value of true if the password is correct', async () => {
       const password1 = 'password';
       const password2 = 'password2';
       const result1 = await user.validatePassword(password1);
@@ -82,39 +160,39 @@ describe("The User class should have", () => {
   });
 
   describe('a findMany static method that', () => {
-    test.todo('exists');
-    test.todo('returns an array of User instances that match the options given');
-    test.todo('uses the prisma.user.findMany method');
+    it.todo('exists');
+    it.todo('returns an array of User instances that match the options given');
+    it.todo('uses the prisma.user.findMany method');
   });
 
   describe('a findUnique static method that', () => {
-    test.todo('exists');
-    test.todo('returns the one User instance that matches the criteria given');
-    test.todo('returns undefined if no User instances match the criteria given');
-    test.todo('uses the prisma.user.findUnique method');
+    it.todo('exists');
+    it.todo('returns the one User instance that matches the criteria given');
+    it.todo('returns undefined if no User instances match the criteria given');
+    it.todo('uses the prisma.user.findUnique method');
   });
 
   describe('an update static method that', () => {
-    test.todo('exists');
-    test.todo('returns the updated User instances');
-    test.todo('updates the User instances that match the criteria given');
+    it.todo('exists');
+    it.todo('returns the updated User instances');
+    it.todo('updates the User instances that match the criteria given');
   });
 
   describe('a destroy static method that', () => {
-    test.todo('exists');
-    test.todo('returns the IDs of the Users that were destroyed');
-    test.todo('removes those users from the database');
+    it.todo('exists');
+    it.todo('returns the IDs of the Users that were destroyed');
+    it.todo('removes those users from the database');
   });
 
   describe('an update instance method that', () => {
-    test.todo('exists');
-    test.todo('returns the IDs of the Users that were updated');
-    test.todo('updates the user in the database');
+    it.todo('exists');
+    it.todo('returns the IDs of the Users that were updated');
+    it.todo('updates the user in the database');
   });
 
   describe('a destroy instance method that', () => {
-    test.todo('exists');
-    test.todo('returns nothing');
-    test.todo('destroys the user instance that it was called on');
+    it.todo('exists');
+    it.todo('returns nothing');
+    it.todo('destroys the user instance that it was called on');
   });
 });
