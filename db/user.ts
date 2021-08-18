@@ -20,32 +20,6 @@ interface UserInterface {
   hashedPassword: string;
 }
 
-// const User = {
-//   login: async ({ username, password }: loginUser) => {
-
-//   },
-//   signup: async ({ username, email, password, confirmPassword }: signupUser) => {
-//     if (confirmPassword !== password) {
-//       throw Error('Confirm Password field must match Password field.');
-//     }
-
-//     const query = await user.findFirst({
-//       where: {
-//         OR: [
-//           {
-//             username,
-//           },
-//           {
-//             email,
-//           },
-//         ],
-//       },
-//     });
-//     console.log(query);
-//   },
-//   validatePassword: () => true,
-// };
-
 class User {
   id: number;
   email: string;
@@ -59,8 +33,20 @@ class User {
     this.hashedPassword = user.hashedPassword;
   }
 
+  static emailLookup = (email: string) => {
+    return user.findUnique({ where: { email } });
+  }
+
+  static usernameLookup = (username: string) => {
+    return user.findUnique({ where: { username } });
+  }
+
   static login = ({ credential, password }: LoginUser) => {}
-  static signup = ({ email, username, password }: SignupUser) => {}
+  static signup = ({ email, username, password, confirmPassword }: SignupUser) => {
+    if (password !== confirmPassword) {
+      throw Error('Passwords must match.');
+    }
+  }
 
   static hashPassword = (password: string) => {
     return bcrypt.hash(password, 10);
