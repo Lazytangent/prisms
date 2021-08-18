@@ -17,7 +17,7 @@ describe('db', () => {
   });
 });
 
-describe("the User class should have", () => {
+describe("The User class should have", () => {
   describe('a hashPassword static method that', () => {
     test('exists', () => {
       expect(User.hashPassword).toBeInstanceOf(Function);
@@ -37,12 +37,24 @@ describe("the User class should have", () => {
     test('exists', () => {
       expect(User.signup).toBeInstanceOf(Function);
     });
+
+    test.todo('creates a new User if the information provided validates');
+    test.todo('returns errors about the fields that failed validation');
+    test.todo('does not create a new User if information is missing');
+    test.todo('does not create a new User if the email has been used');
+    test.todo('does not create a new User if the username has been used');
+    test.todo("does not create a new User if the passwords don't match");
   });
 
   describe('a login static method that', () => {
     test('exists', () => {
       expect(User.login).toBeInstanceOf(Function);
     });
+
+    test.todo('logs a user in if the information provided validates');
+    test.todo('returns an error if either the credential or password fails validation');
+    test.todo('does not log a user in if the password does not validate');
+    test.todo('does not log a user in if the credential does not match an email nor a username');
   });
 
   describe('a validatePassword instance method that', () => {
@@ -67,5 +79,36 @@ describe("the User class should have", () => {
       expect(result1).toEqual(true);
       expect(result2).toEqual(false);
     });
+  });
+
+  describe('a findMany static method that', () => {
+    test.todo('exists');
+    test.todo('returns an array of User instances that match the options given');
+    test.todo('uses the prisma.user.findMany method');
+  });
+
+  describe('a findUnique static method that', () => {
+    test.todo('exists');
+    test.todo('returns the one User instance that matches the criteria given');
+    test.todo('returns undefined if no User instances match the criteria given');
+    test.todo('uses the prisma.user.findUnique method');
+  });
+
+  describe('an update static method that', () => {
+    test.todo('exists');
+    test.todo('returns the updated User instances');
+    test.todo('updates the User instances that matche the criteria given');
+  });
+
+  describe('a destroy static method that', () => {
+
+  });
+
+  describe('an update instance method that', () => {
+
+  });
+
+  describe('a destroy instance method that', () => {
+
   });
 });
