@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest -i",
+    "test": "dotenv -e .env.test jest -i",
     "start": "per-env",
     "start:development": "nodemon -r dotenv/config ./bin/www",
-    "start:production": "ts-node ./bin/www"
+    "start:production": "ts-node ./bin/www",
+    "migrate:test": "dotenv -e .env.test -- npx prisma migrate dev"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +22,7 @@
     "@types/jest": "^27.0.1",
     "@types/node": "^16.6.1",
     "@types/supertest": "^2.0.11",
+    "dotenv-cli": "^4.0.0",
     "jest": "^27.0.6",
     "jest-mock-extended": "^2.0.2-beta2",
     "nodemon": "^2.0.12",
