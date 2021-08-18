@@ -97,18 +97,24 @@ describe("The User class should have", () => {
   describe('an update static method that', () => {
     test.todo('exists');
     test.todo('returns the updated User instances');
-    test.todo('updates the User instances that matche the criteria given');
+    test.todo('updates the User instances that match the criteria given');
   });
 
   describe('a destroy static method that', () => {
-
+    test.todo('exists');
+    test.todo('returns the IDs of the Users that were destroyed');
+    test.todo('removes those users from the database');
   });
 
   describe('an update instance method that', () => {
-
+    test.todo('exists');
+    test.todo('returns the IDs of the Users that were updated');
+    test.todo('updates the user in the database');
   });
 
   describe('a destroy instance method that', () => {
-
+    test.todo('exists');
+    test.todo('returns nothing');
+    test.todo('destroys the user instance that it was called on');
   });
 });
