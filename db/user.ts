@@ -51,12 +51,33 @@ class User {
     return !!user;
   }
 
-  static login = ({ credential, password }: LoginUser) => {}
-  static signup = ({ email, username, password, confirmPassword }: SignupUser) => {
+  static signup = async ({ email, username, password, confirmPassword }: SignupUser) => {
+    const errors = [];
+
     if (password !== confirmPassword) {
-      throw Error('Passwords must match.');
+      errors.push('Passwords must match.');
     }
+
+    if (password.length < 6) {
+      errors.push('Password must be at least 6 characters long.');
+    }
+
+    const emailExists = await User.emailExists(email);
+    const usernameExists = await User.usernameExists(username);
+
+    const lookupResult = !emailExists && !usernameExists;
+    if (!lookupResult) {
+      if (emailExists) errors.push('Email already exists.');
+      if (usernameExists) errors.push('Username already exists.');
+
+      return errors;
+    }
+
+    const hashedPassword = await User.hashPassword(password);
+    return await user.create({ data: { email, username, hashedPassword } });
   }
+
+  static login = ({ credential, password }: LoginUser) => {}
 
   static hashPassword = (password: string) => {
     return bcrypt.hash(password, 10);

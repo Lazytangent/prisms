@@ -18,6 +18,24 @@ describe('db', () => {
 });
 
 describe("The User class should have", () => {
+  let email: string;
+  let username: string;
+
+  beforeAll(async () => {
+    const password = 'password';
+    const hashedPassword = await bcrypt.hash(password, 10);
+    email = 'test@email.com';
+    username = 'testuser';
+
+    const userInfo = { email, username, hashedPassword };
+    await db.user.create({ data: userInfo });
+  });
+
+  afterAll(async () => {
+    await db.user.delete({ where: { email } });
+    await db.$disconnect();
+  });
+
   describe('a hashPassword static method that', () => {
     it('exists', () => {
       expect(User.hashPassword).toBeInstanceOf(Function);
@@ -34,22 +52,6 @@ describe("The User class should have", () => {
   });
 
   describe('an emailLookup static method that', () => {
-    let email: string;
-
-    beforeEach(async () => {
-      const password = 'password';
-      const hashedPassword = await bcrypt.hash(password, 10);
-      email = 'test@email.com';
-
-      const userInfo = { email, username: 'testuser', hashedPassword };
-      await db.user.create({ data: userInfo });
-    });
-
-    afterEach(async () => {
-      await db.user.delete({ where: { email } });
-      await db.$disconnect();
-    });
-
     it('returns a User object if a user matches the email provided', async () => {
       const user = await User.emailLookup(email);
 
@@ -65,22 +67,6 @@ describe("The User class should have", () => {
   });
 
   describe('a usernameLookup static method that', () => {
-    let username: string;
-
-    beforeEach(async () => {
-      const password = 'password';
-      const hashedPassword = await bcrypt.hash(password, 10);
-      username = 'testuser';
-
-      const userInfo = { email: 'test@email.com', username, hashedPassword };
-      await db.user.create({ data: userInfo });
-    });
-
-    afterEach(async () => {
-      await db.user.delete({ where: { username } });
-      await db.$disconnect();
-    });
-
     it('returns a User object if a user matches the username provided', async () => {
       const user = await User.usernameLookup(username);
 
@@ -96,22 +82,6 @@ describe("The User class should have", () => {
   });
 
   describe('an emailExists static method that', () => {
-    let email: string;
-
-    beforeEach(async () => {
-      const password = 'password';
-      const hashedPassword = await bcrypt.hash(password, 10);
-      email = 'test@email.com';
-
-      const userInfo = { email, username: 'testuser', hashedPassword };
-      await db.user.create({ data: userInfo });
-    });
-
-    afterEach(async () => {
-      await db.user.delete({ where: { email } });
-      await db.$disconnect();
-    });
-
     it('returns a boolean value of true if a user with the provided email exists', async () => {
       const result = await User.emailExists(email);
 
@@ -125,22 +95,6 @@ describe("The User class should have", () => {
   });
 
   describe('a usernameExists static method that', () => {
-    let username: string;
-
-    beforeEach(async () => {
-      const password = 'password';
-      const hashedPassword = await bcrypt.hash(password, 10);
-      username = 'testusername';
-      const userInfo = { username, email: 'test@email.com', hashedPassword };
-
-      await db.user.create({ data: userInfo });
-    });
-
-    afterEach(async () => {
-      await db.user.delete({ where: { username } });
-      await db.$disconnect();
-    });
-
     it('returns a boolean value of true if a user with the provided username exists', async () => {
       const result = await User.usernameExists(username);
 
@@ -154,19 +108,36 @@ describe("The User class should have", () => {
   });
 
   describe('a signup static method that', () => {
+    let username: string;
+    let email: string;
+
+    beforeEach(() => {
+      username = 'valid_username';
+      email = 'valid@email.com';
+    });
+
+    afterEach(async () => {
+      try {
+        await db.user.delete({ where: { username } });
+      } catch (e) {}
+    });
+
     it('exists', () => {
       expect(User.signup).toBeInstanceOf(Function);
     });
 
     it('creates a new User if the information provided validates', async () => {
-      const userInfoSignup = { email: 'test@test.io', username: 'valid_username', password: 'password', confirmPassword: 'password' };
+      const userInfoSignup = { email, username, password: 'password', confirmPassword: 'password' };
       const user = await User.signup(userInfoSignup);
 
-      // expect(user).toContain(userInfoSignup);
+      expect(user).toMatchObject({ email, username });
     });
 
     it('returns errors about the fields that failed validation', async () => {
-      const badUserInfo = { email: 'test', username: '', password: 'asdf' };
+      const badUserInfo = { email: 'test', username: '', password: 'asdf', confirmPassword: 'zxcv' };
+      const user = await User.signup(badUserInfo);
+
+      expect(user).toHaveLength(4);
     });
 
     it.todo('does not create a new User if information is missing');
