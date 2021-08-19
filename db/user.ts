@@ -1,4 +1,6 @@
 import bcrypt from 'bcryptjs';
+import isEmail from 'validator/lib/isEmail';
+
 import { user } from "../db";
 
 interface LoginUser {
@@ -62,6 +64,9 @@ class User {
       errors.push('Password must be at least 6 characters long.');
     }
 
+    if (!isEmail(email)) errors.push('Invalid email.');
+    if (!username.length) errors.push('Username must have length.');
+
     const emailExists = await User.emailExists(email);
     const usernameExists = await User.usernameExists(username);
 
@@ -69,9 +74,9 @@ class User {
     if (!lookupResult) {
       if (emailExists) errors.push('Email already exists.');
       if (usernameExists) errors.push('Username already exists.');
-
-      return errors;
     }
+
+    if (errors.length) return errors;
 
     const hashedPassword = await User.hashPassword(password);
     return await user.create({ data: { email, username, hashedPassword } });

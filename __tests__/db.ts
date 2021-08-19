@@ -121,7 +121,7 @@ describe("The User class should have", () => {
 
     afterEach(async () => {
       try {
-        await db.user.delete({ where: { email } });
+        await db.user.delete({ where: { email, username } });
       } catch (e) {}
     });
 
@@ -150,8 +150,21 @@ describe("The User class should have", () => {
       expect(user).toContain('Email already exists.');
     });
 
-    it.todo('does not create a new User if the username has been used');
-    it.todo("does not create a new User if the passwords don't match");
+    it('does not create a new User if the username has been used', async () => {
+      const badUserInfo = { email: 'another@email.io', username, password: 'zxcvasdf', confirmPassword: 'zxcvasdf' };
+      const user = await User.signup(badUserInfo);
+
+      expect(user).toHaveLength(1);
+      expect(user).toContain('Username already exists.');
+    });
+
+    it("does not create a new User if the passwords don't match", async () => {
+      const badUserInfo = { email: 'another@email2.io', username: 'another_valid_username', password: 'asdfzxcv', confirmPassword: 'zxcvasdf' };
+      const user = await User.signup(badUserInfo);
+
+      expect(user).toHaveLength(1);
+      expect(user).toContain('Passwords must match.');
+    });
   });
 
   describe('a login static method that', () => {
