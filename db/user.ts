@@ -41,6 +41,11 @@ class User {
     return user.findUnique({ where: { username } });
   }
 
+  static emailExists = async (email: string): Promise<boolean> => {
+    const user = await User.emailLookup(email);
+    return !!user;
+  }
+
   static login = ({ credential, password }: LoginUser) => {}
   static signup = ({ email, username, password, confirmPassword }: SignupUser) => {
     if (password !== confirmPassword) {

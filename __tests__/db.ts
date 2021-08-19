@@ -57,7 +57,7 @@ describe("The User class should have", () => {
       expect(user?.email).toEqual(email);
     });
 
-    it('returns undefined if no user matches the email provided', async () => {
+    it('returns null if no user matches the email provided', async () => {
       const user = await User.emailLookup('bad@email.io');
 
       expect(user).toBeNull();
@@ -88,12 +88,40 @@ describe("The User class should have", () => {
       expect(user?.username).toEqual(username);
     });
 
-    it.todo('returns undefined if no user matches the username provided');
+    it('returns null if no user matches the username provided', async () => {
+      const user = await User.usernameLookup('badusername');
+
+      expect(user).toBeNull();
+    });
   });
 
   describe('an emailExists static method that', () => {
-    it.todo('returns a boolean value of true if a user with the provided email exists');
-    it.todo('returns a boolean value of false if no user with the provided email exists');
+    let email: string;
+
+    beforeEach(async () => {
+      const password = 'password';
+      const hashedPassword = await bcrypt.hash(password, 10);
+      email = 'test@email.com';
+
+      const userInfo = { email, username: 'testuser', hashedPassword };
+      await db.user.create({ data: userInfo });
+    });
+
+    afterEach(async () => {
+      await db.user.delete({ where: { email } });
+      await db.$disconnect();
+    });
+
+    it('returns a boolean value of true if a user with the provided email exists', async () => {
+      const result = await User.emailExists(email);
+
+      expect(result).toEqual(true);
+    });
+    it('returns a boolean value of false if no user with the provided email exists', async () => {
+      const result = await User.emailExists('bad@email.com');
+
+      expect(result).toEqual(false);
+    });
   });
 
   describe('a usernameExists static method that', () => {
