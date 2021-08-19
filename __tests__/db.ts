@@ -125,8 +125,32 @@ describe("The User class should have", () => {
   });
 
   describe('a usernameExists static method that', () => {
-    it.todo('returns a boolean value of true if a user with the provided username exists');
-    it.todo('returns a boolean value of false if no user with the provided username exists');
+    let username: string;
+
+    beforeEach(async () => {
+      const password = 'password';
+      const hashedPassword = await bcrypt.hash(password, 10);
+      username = 'testusername';
+      const userInfo = { username, email: 'test@email.com', hashedPassword };
+
+      await db.user.create({ data: userInfo });
+    });
+
+    afterEach(async () => {
+      await db.user.delete({ where: { username } });
+      await db.$disconnect();
+    });
+
+    it('returns a boolean value of true if a user with the provided username exists', async () => {
+      const result = await User.usernameExists(username);
+
+      expect(result).toEqual(true);
+    });
+    it('returns a boolean value of false if no user with the provided username exists', async () => {
+      const result = await User.usernameExists('badusername');
+
+      expect(result).toEqual(false);
+    });
   });
 
   describe('a signup static method that', () => {

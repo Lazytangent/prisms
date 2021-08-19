@@ -46,6 +46,11 @@ class User {
     return !!user;
   }
 
+  static usernameExists = async (username: string): Promise<boolean> => {
+    const user = await User.usernameLookup(username);
+    return !!user;
+  }
+
   static login = ({ credential, password }: LoginUser) => {}
   static signup = ({ email, username, password, confirmPassword }: SignupUser) => {
     if (password !== confirmPassword) {
