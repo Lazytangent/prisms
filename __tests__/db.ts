@@ -111,14 +111,17 @@ describe("The User class should have", () => {
     let username: string;
     let email: string;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       username = 'valid_username';
       email = 'valid@email.com';
+      const userInfoSignup = { email, username, password: 'password', confirmPassword: 'password' };
+
+      await User.signup(userInfoSignup);
     });
 
     afterEach(async () => {
       try {
-        await db.user.delete({ where: { username } });
+        await db.user.delete({ where: { email } });
       } catch (e) {}
     });
 
@@ -127,8 +130,7 @@ describe("The User class should have", () => {
     });
 
     it('creates a new User if the information provided validates', async () => {
-      const userInfoSignup = { email, username, password: 'password', confirmPassword: 'password' };
-      const user = await User.signup(userInfoSignup);
+      const user = await db.user.findUnique({ where: { email } });
 
       expect(user).toMatchObject({ email, username });
     });
@@ -140,8 +142,14 @@ describe("The User class should have", () => {
       expect(user).toHaveLength(4);
     });
 
-    it.todo('does not create a new User if information is missing');
-    it.todo('does not create a new User if the email has been used');
+    it('does not create a new User if the email has been used', async () => {
+      const badUserInfo = { email, username: 'asdf', password: 'asdfzxcv', confirmPassword: 'asdfzxcv' };
+      const user = await User.signup(badUserInfo);
+
+      expect(user).toHaveLength(1);
+      expect(user).toContain('Email already exists.');
+    });
+
     it.todo('does not create a new User if the username has been used');
     it.todo("does not create a new User if the passwords don't match");
   });
