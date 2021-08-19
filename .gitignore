@@ -3,3 +3,4 @@ node_modules
 .env
 tags
 .env.test
+test.db*

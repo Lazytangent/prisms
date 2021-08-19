@@ -1,6 +1,5 @@
 import bcrypt from 'bcryptjs';
 import db, { User, Tweet } from '../db';
-import { prismaMock } from '../db/singleton';
 
 describe('db', () => {
   describe('should export', () => {
@@ -74,12 +73,12 @@ describe("The User class should have", () => {
       username = 'testuser';
 
       const userInfo = { email: 'test@email.com', username, hashedPassword };
-      await prismaMock.user.create({ data: userInfo });
+      await db.user.create({ data: userInfo });
     });
 
     afterEach(async () => {
-      await prismaMock.user.delete({ where: { username } });
-      await prismaMock.$disconnect();
+      await db.user.delete({ where: { username } });
+      await db.$disconnect();
     });
 
     it('returns a User object if a user matches the username provided', async () => {

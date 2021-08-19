@@ -8,7 +8,7 @@
     "start": "per-env",
     "start:development": "nodemon -r dotenv/config ./bin/www",
     "start:production": "ts-node ./bin/www",
-    "migrate:test": "dotenv -e .env.test -- npx prisma migrate dev"
+    "migrate:test": "dotenv -e .env.test -- npx prisma migrate dev --schema ./test-prisma/schema.prisma"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +28,7 @@
     "nodemon": "^2.0.12",
     "prisma": "^2.29.1",
     "source-map-support": "^0.5.19",
+    "sqlite3": "^5.0.2",
     "supertest": "^6.1.5",
     "ts-jest": "^27.0.5",
     "ts-node": "^10.2.0",
