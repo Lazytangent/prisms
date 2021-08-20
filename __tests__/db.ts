@@ -168,11 +168,32 @@ describe("The User class should have", () => {
   });
 
   describe('a login static method that', () => {
+    let username: string;
+    let email: string;
+    let password: string;
+
+    beforeAll(async () => {
+      password = 'password';
+      const hashedPassword = await bcrypt.hash(password, 10);
+      username = 'valid_username';
+      email = 'valie@email.com';
+
+      await db.user.create({ data: { username, email, hashedPassword } });
+    });
+
+    afterAll(async () => {
+      await db.user.delete({ where: { username } });
+      await db.$disconnect();
+    });
+
     it('exists', () => {
       expect(User.login).toBeInstanceOf(Function);
     });
 
-    it.todo('logs a user in if the information provided validates');
+    it('logs a user in if the information provided validates', async () => {
+      const user = await User.login({ credential: username, password });
+    });
+
     it.todo('returns an error if either the credential or password fails validation');
     it.todo('does not log a user in if the password does not validate');
     it.todo('does not log a user in if the credential does not match an email nor a username');

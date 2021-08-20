@@ -82,7 +82,9 @@ class User {
     return await user.create({ data: { email, username, hashedPassword } });
   }
 
-  static login = ({ credential, password }: LoginUser) => {}
+  static login = ({ credential, password }: LoginUser) => {
+
+  }
 
   static hashPassword = (password: string) => {
     return bcrypt.hash(password, 10);
