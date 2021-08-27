@@ -172,16 +172,16 @@ describe("The User class should have", () => {
     let email: string;
     let password: string;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
       password = 'password';
       const hashedPassword = await bcrypt.hash(password, 10);
-      username = 'valid_username';
+      username = 'valid_username_2';
       email = 'valie@email.com';
 
       await db.user.create({ data: { username, email, hashedPassword } });
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
       await db.user.delete({ where: { username } });
       await db.$disconnect();
     });
