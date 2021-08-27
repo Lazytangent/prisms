@@ -22,6 +22,12 @@ interface UserInterface {
   hashedPassword: string;
 }
 
+interface QueryOptions {
+  where: {
+
+  }
+}
+
 class User {
   id: number;
   email: string;
@@ -82,13 +88,16 @@ class User {
     return await user.create({ data: { email, username, hashedPassword } });
   }
 
-  static login = ({ credential, password }: LoginUser) => {
-
+  static login = async ({ credential, password }: LoginUser) => {
+    const authenticated = await user.findUnique({ where: { OR: [{ username: credential }, { email: credential }] } });
+    const isPasswordMatch = await authenticated.validatePassword(password);
   }
 
   static hashPassword = (password: string) => {
     return bcrypt.hash(password, 10);
   }
+
+  static findUnique = () => {}
 
   validatePassword = (password: string) => {
     return bcrypt.compare(password, this.hashedPassword);
